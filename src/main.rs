@@ -33,4 +33,5 @@ async fn main() -> std::io::Result<()> {
     .bind(env::var("BIND_URL").unwrap_or("0.0.0.0:3000".to_string()))?
     .run()
     .await
+    //
 }
