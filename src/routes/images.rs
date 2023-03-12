@@ -9,11 +9,11 @@ use crate::database::{images, Database};
 pub async fn get_image(database: Data<Database>, path: web::Path<String>) -> HttpResponse {
     let image = match images::get_image(&database, path.into_inner()).await {
         Some(image) => image,
-        None => return HttpResponse::BadRequest().body("Image not found"),
+        None => return HttpResponse::NotFound().body("Image not found"),
     };
     let image_data = match images::get_image_data(&database, image.data).await {
         Some(image_data) => image_data,
-        None => return HttpResponse::BadRequest().body("Image data not found"),
+        None => return HttpResponse::NotFound().body("Image data not found"),
     };
     HttpResponse::Ok()
         .content_type(image_data.mime)

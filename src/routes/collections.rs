@@ -1,5 +1,3 @@
-use std::io::Read;
-
 use crate::database::{
     collections::{self, Collection},
     images::{self, ImageData},
@@ -14,6 +12,7 @@ use actix_web::{
 use cuid2::cuid;
 use serde::Deserialize;
 use serde_json::json;
+use std::io::Read;
 
 #[derive(Debug, Deserialize)]
 pub struct CreateCollectionDto {
@@ -80,7 +79,7 @@ pub async fn set_collection_thumb(
 ) -> HttpResponse {
     let collection = match collections::get(&database, path.into_inner()).await {
         Some(collection) => collection,
-        None => return HttpResponse::BadRequest().body("Collection not found"),
+        None => return HttpResponse::NotFound().body("Collection not found"),
     };
 
     let mut content = Vec::new();
@@ -103,7 +102,6 @@ pub async fn set_collection_thumb(
     collections::set_thumb(&database, collection.id, image_id).await;
 
     if let Some(thumb) = collection.thumb {
-        println!("Deleting old image data: {}", thumb);
         images::delete_image_data(&database, thumb).await;
     }
 
@@ -117,19 +115,19 @@ pub async fn get_collection_thumb(
 ) -> HttpResponse {
     let collection = match collections::get(&database, path.into_inner()).await {
         Some(collection) => collection,
-        None => return HttpResponse::BadRequest().body("Collection not found"),
+        None => return HttpResponse::NotFound().body("Collection not found"),
     };
 
     if let Some(thumb) = collection.thumb {
         let image_data = match images::get_image_data(&database, thumb).await {
             Some(image_data) => image_data,
-            None => return HttpResponse::BadRequest().body("Collection thumbnail not found"),
+            None => return HttpResponse::NotFound().body("Collection thumbnail not found"),
         };
         HttpResponse::Ok()
             .content_type(image_data.mime)
             .body(image_data.content)
     } else {
-        HttpResponse::BadRequest().body("Collection has no thumbnail")
+        HttpResponse::NotFound().body("Collection has no thumbnail")
     }
 }
 
@@ -140,7 +138,7 @@ pub async fn get_collection_images(
 ) -> HttpResponse {
     let collection = match collections::get(&database, path.into_inner()).await {
         Some(collection) => collection,
-        None => return HttpResponse::BadRequest().body("Collection not found"),
+        None => return HttpResponse::NotFound().body("Collection not found"),
     };
 
     let images = images::get_all_by_collection(&database, collection.id).await;
@@ -151,7 +149,7 @@ pub async fn get_collection_images(
 pub async fn delete_collection(database: Data<Database>, path: web::Path<String>) -> HttpResponse {
     let collection = match collections::get(&database, path.into_inner()).await {
         Some(collection) => collection,
-        None => return HttpResponse::BadRequest().body("Collection not found"),
+        None => return HttpResponse::NotFound().body("Collection not found"),
     };
 
     if collections::get_all_by_parent(&database, collection.id.clone())
@@ -178,7 +176,7 @@ pub async fn get_collection_children(
 ) -> HttpResponse {
     let collection = match collections::get(&database, path.into_inner()).await {
         Some(collection) => collection,
-        None => return HttpResponse::BadRequest().body("Collection not found"),
+        None => return HttpResponse::NotFound().body("Collection not found"),
     };
 
     let children = collections::get_all_by_parent(&database, collection.id).await;
