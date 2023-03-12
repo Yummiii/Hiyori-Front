@@ -16,6 +16,7 @@ pub async fn get_image(database: Data<Database>, path: web::Path<String>) -> Htt
         None => return HttpResponse::NotFound().body("Image data not found"),
     };
     HttpResponse::Ok()
+        .insert_header(("Cache-Control", "max-age=2630000, no-transform"))
         .content_type(image_data.mime)
         .body(image_data.content)
 }
