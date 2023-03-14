@@ -6,7 +6,7 @@ use crate::database::{
 use actix_multipart::form::{tempfile::TempFile, MultipartForm};
 use actix_web::{
     delete, get, post,
-    web::{self, Data, Json},
+    web::{self, Data, Json, Bytes},
     HttpResponse,
 };
 use cuid2::cuid;
@@ -108,10 +108,16 @@ pub async fn set_collection_thumb(
     HttpResponse::Ok().body("Collection thumbnail set")
 }
 
+#[derive(Debug, Deserialize)]
+pub struct GetThumbQuerry {
+    pub default: Option<bool>,
+}
+
 #[get("/{id}/thumb")]
 pub async fn get_collection_thumb(
     database: Data<Database>,
     path: web::Path<String>,
+    query: web::Query<GetThumbQuerry>,
 ) -> HttpResponse {
     let collection = match collections::get(&database, path.into_inner()).await {
         Some(collection) => collection,
@@ -127,7 +133,14 @@ pub async fn get_collection_thumb(
             .content_type(image_data.mime)
             .body(image_data.content)
     } else {
-        HttpResponse::NotFound().body("Collection has no thumbnail")
+        if query.default.unwrap_or(false) {
+            let default_image = Bytes::from_static(include_bytes!("../../assets/default.png"));
+            return HttpResponse::Ok()
+                .content_type("image/png")
+                .body(default_image);
+        } else {
+            return HttpResponse::NotFound().body("Collection has no thumbnail");
+        }
     }
 }
 
