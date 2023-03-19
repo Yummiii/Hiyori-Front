@@ -32,8 +32,8 @@ const fetcher: Fetcher<any[], string> = async (url) => {
 };
 
 export default function Home() {
-    // const url = `https://api.zuraaa.com/hiyori`;
-    const url = "http://127.0.0.1:8080";
+    const url = `https://api.zuraaa.com/hiyori`;
+    // const url = "http://127.0.0.1:8080";
     const fallback_img =
         "https://media.discordapp.net/attachments/708673194017423394/1062490251442008124/375.png";
 
