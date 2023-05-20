@@ -3,6 +3,7 @@ import styles from "./NewCollection.module.scss";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { ChangeEvent, RefObject, useRef, useState } from "react";
 import { Collection } from "@/commons/types";
+import { toast } from "bulma-toast";
 
 export interface NewCollectionProps {
   show: boolean;
@@ -10,7 +11,6 @@ export interface NewCollectionProps {
 }
 
 const NewCollection: React.FC<NewCollectionProps> = (props) => {
-  const [fileName, setFileName] = useState<string>("Choose a file…");
   const [thumb, setThumb] = useState<File | null>(null);
   const [isNameValid, setIsNameValid] = useState<boolean>(true);
 
@@ -18,45 +18,57 @@ const NewCollection: React.FC<NewCollectionProps> = (props) => {
 
   function thumbSelected(e: ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
-    const file = e.target.files[0];
-    setFileName(file.name);
-    setThumb(file);
+    setThumb(e.target.files[0]);
   }
 
-  if (!props.save.current) return (<></>);
-  props.save.current.onclick = async () => {
-    if (!name.current || !name.current.value || name.current.value.length < 1) {
+  if (props.save.current) {
+    props.save.current.onclick = async () => {
+      if (
+        !name.current ||
+        !name.current.value ||
+        name.current.value.length < 1
+      ) {
         setIsNameValid(false);
         return;
-    }
+      }
 
-    setIsNameValid(true);
-    let resp = await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/create`, {
-        method: "POST",
-        headers: {
+      setIsNameValid(true);
+      let resp = (await (
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/create`, {
+          method: "POST",
+          headers: {
             "Content-Type": "application/json",
-            "Authorization": localStorage.getItem("token") || ""
-        },
-        body: JSON.stringify({
-            name: name.current.value
+            Authorization: localStorage.getItem("token") || "",
+          },
+          body: JSON.stringify({
+            name: name.current.value,
+          }),
         })
-    })).json() as Collection;
-    
-    console.log(resp);
+      ).json()) as Collection;
 
-    if (thumb) {
+      if (thumb) {
         const formData = new FormData();
         formData.append("thumbnail", thumb);
-        resp = await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/${resp.id}/thumbnail`, {
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/collections/${resp.id}/thumbnail`,
+          {
             method: "POST",
             headers: {
-                "Authorization": localStorage.getItem("token") || ""
+              Authorization: localStorage.getItem("token") || "",
             },
-            body: formData
-        })).json() as Collection;
-    }
+            body: formData,
+          }
+        );
+      }
 
-    console.log(resp);
+      toast({
+        message: `Collection ${resp.name} created`,
+        type: "is-success",
+      });
+
+      setThumb(null);
+      name.current.value = "";
+    };
   }
 
   return (
@@ -67,7 +79,12 @@ const NewCollection: React.FC<NewCollectionProps> = (props) => {
       <div className={styles.field}>
         <label className="label">Collection Name</label>
         <div className="control">
-          <input className={`input ${!isNameValid ? "is-danger" : ""}`} type="text" placeholder="Collection name" ref={name} />
+          <input
+            className={`input ${!isNameValid ? "is-danger" : ""}`}
+            type="text"
+            placeholder="Collection name"
+            ref={name}
+          />
         </div>
       </div>
       <div className={styles.field}>
@@ -87,7 +104,9 @@ const NewCollection: React.FC<NewCollectionProps> = (props) => {
               </span>
               <span className="file-label">Choose a file…</span>
             </span>
-            <span className={`file-name ${styles.field}`}>{fileName}</span>
+            <span className={`file-name ${styles.field}`}>
+              {thumb?.name || "Select a file"}
+            </span>
           </label>
         </div>
       </div>
