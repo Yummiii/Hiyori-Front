@@ -1,0 +1,16 @@
+.collectionCard {
+    width: 20rem;
+    height: 7rem;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.collectionImage {
+    object-fit: cover;
+}
+
+.cardContent {
+    background-color: #fff;
+}

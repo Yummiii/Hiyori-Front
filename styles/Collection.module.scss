@@ -1,0 +1,11 @@
+.book {
+    margin: 1rem;
+}
+
+.bookCollection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: column;
+    padding: 1rem;
+}

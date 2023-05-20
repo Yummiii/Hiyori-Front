@@ -1,47 +1,9 @@
-.collectionsList {
+.collections {
     display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    width: fit-content;
-    height: fit-content;
-    flex-flow: row wrap;
-    padding: 2rem;
-    padding-top: 1rem;
-}
-
-.collectionCard {
-    // height: 15rem;
-    width: 15rem;
-    // color: white;
-
-    img {
-        object-fit: cover;
-    }
-}
-
-.navContainer {
-    width: 100%;
-    // background-color: green;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    padding-top: 1rem;
-    padding-bottom: 0.3rem;
-}
-
-.pao {
-    // background-color: red;
-    width: fit-content;
-    box-shadow: 0 .5em 1em -.125em rgba(10,10,10,.1),0 0 0 1px rgba(10,10,10,.02);
-    border-radius: .25rem;
-
-    ul {
-      margin: 0.3rem;
-    }
-}
-
-.imgsfodas {
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
+    width: 100%;    
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
+    margin: 0 auto;
 }
