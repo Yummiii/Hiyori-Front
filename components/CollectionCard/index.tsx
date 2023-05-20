@@ -14,7 +14,7 @@ const CollectionCard: React.FC<CollectionCardProps> = (props) => {
           <figure className="image is-4by3">
             <img
               className={styles.collectionImage}
-              src={`${process.env.API_URL}/collections/${props.collection.id}/thumbnail`}
+              src={`${process.env.NEXT_PUBLIC_API_URL}/collections/${props.collection.id}/thumbnail`}
               alt="Placeholder image"
             />
           </figure>

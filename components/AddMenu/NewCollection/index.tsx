@@ -31,7 +31,7 @@ const NewCollection: React.FC<NewCollectionProps> = (props) => {
     }
 
     setIsNameValid(true);
-    let resp = await (await fetch(`${process.env.API_URL}/collections/create`, {
+    let resp = await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -47,7 +47,7 @@ const NewCollection: React.FC<NewCollectionProps> = (props) => {
     if (thumb) {
         const formData = new FormData();
         formData.append("thumbnail", thumb);
-        resp = await (await fetch(`${process.env.API_URL}/collections/${resp.id}/thumbnail`, {
+        resp = await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/${resp.id}/thumbnail`, {
             method: "POST",
             headers: {
                 "Authorization": localStorage.getItem("token") || ""

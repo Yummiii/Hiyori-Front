@@ -1,7 +1,7 @@
 import { Fetcher } from "swr";
 
 const fetcher: Fetcher<any, string> = async (url) => {
-  url = `${process.env.API_URL}${url}`;
+  url = `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_API_URL}${url}`;
   const res = await fetch(url, {
     headers: {
       Authorization: localStorage.getItem("token") || "",

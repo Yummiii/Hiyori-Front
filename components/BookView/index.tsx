@@ -28,11 +28,11 @@ const BookView: React.FC<BookViewProps> = (props) => {
         {data.pages.map((page) => (
           <img
             key={page.id}
-            src={`${process.env.API_URL}/books/${props.book.id}/images/${page.id}`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}/books/${props.book.id}/images/${page.id}`}
             style={{ height: "8rem" }}
             onClick={() =>
               open(
-                `${process.env.API_URL}/books/${props.book.id}/images/${page.id}`,
+                `${process.env.NEXT_PUBLIC_API_URL}/books/${props.book.id}/images/${page.id}`,
                 "_blank"
               )
             }

@@ -43,7 +43,7 @@ const NewBook: React.FC<AddBookProps> = (props) => {
       formData.append("collection", collection);
       formData.append("epub", books[i]);
 
-      await fetch(`${process.env.API_URL}/books/from_epub`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books/from_epub`, {
         method: "POST",
         headers: {
           Authorization: localStorage.getItem("token") || "",
