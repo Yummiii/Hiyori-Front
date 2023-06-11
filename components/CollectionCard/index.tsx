@@ -8,7 +8,7 @@ export interface CollectionCardProps {
 
 const CollectionCard: React.FC<CollectionCardProps> = (props) => {
   return (
-    <Link href={`/collections/${props.collection.id}`}>
+    <Link href={`/collections/${props.collection.id}`} style={{height: "fit-content"}}>
       <div className={`card ${styles.collectionCard}`}>
         <div className="card-image">
           <figure className="image is-4by3">
